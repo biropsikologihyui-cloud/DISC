@@ -1,751 +1,235 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tes Psikologi DISC (MMI Form A) Online</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
-            min-height: 100vh;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-        .radio-custom {
-            appearance: none;
-            width: 1.25rem;
-            height: 1.25rem;
-            border: 2px solid #cbd5e1;
-            border-radius: 50%;
-            outline: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .radio-plus:checked {
-            border-color: #2563eb;
-            background-color: #2563eb;
-            box-shadow: inset 0 0 0 3px #ffffff;
-        }
-        .radio-minus:checked {
-            border-color: #dc2626;
-            background-color: #dc2626;
-            box-shadow: inset 0 0 0 3px #ffffff;
-        }
-        .row-option:hover {
-            background-color: #f1f5f9;
-        }
-        .step-active {
-            color: #4f46e5;
-            border-color: #4f46e5;
-            font-weight: 700;
-        }
-        @media print {
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            body { background: white !important; }
-            .glass-card { box-shadow: none !important; border: none !important; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tes Psikologi DISC Online - MMI Form A</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1e293b; }
+    .card { border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .header-box { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; border-radius: 12px 12px 0 0; padding: 25px; }
+    .table-disc th { background-color: #e2e8f0; text-align: center; font-size: 0.9rem; }
+    .table-disc td { vertical-align: middle; }
+    .radio-cell { text-align: center; width: 60px; cursor: pointer; }
+    .radio-cell input { cursor: pointer; width: 18px; height: 18px; }
+    .btn-submit { background-color: #2563eb; color: white; font-weight: 600; padding: 12px 30px; border-radius: 8px; transition: all 0.3s; }
+    .btn-submit:hover { background-color: #1d4ed8; color: white; }
+    .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+  </style>
 </head>
-<body class="text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
+<body class="py-4">
 
-    <header class="bg-indigo-900 text-white sticky top-0 z-40 shadow-md no-print">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-xl shadow-inner">
-                    🧠
-                </div>
-                <div>
-                    <h1 class="text-lg md:text-xl font-bold tracking-tight leading-none">Tes DISC Online</h1>
-                    <p class="text-xs text-indigo-200 mt-1">Person Analysis Response (MMI Form A)</p>
-                </div>
+  <div class="container" style="max-width: 850px;">
+    <div class="card mb-4">
+      <div class="header-box text-center">
+        <h3 class="fw-bold mb-1"><i class="fa-solid fa-clipboard-question me-2"></i>TES PSIKOLOGI DISC ONLINE</h3>
+        <p class="mb-0 small opacity-75">Lembar Soal MMI Form A - Biro Psikologi Hyui</p>
+      </div>
+      
+      <div class="card-body p-4">
+        <!-- Form Data Diri -->
+        <form id="discForm">
+          <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-user me-2"></i>Data Peserta</h5>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Nama Lengkap *</label>
+              <input type="text" id="nama" class="form-control" placeholder="Contoh: Budi Santoso" required>
             </div>
-            <div id="headerStepBadge" class="hidden md:flex items-center space-x-2 text-xs font-semibold bg-indigo-950/60 px-3 py-1.5 rounded-full border border-indigo-700">
-                <span id="badgeStepText">Langkah 1 dari 3</span>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Usia (Tahun) *</label>
+              <input type="number" id="usia" class="form-control" placeholder="25" required>
             </div>
-        </div>
-    </header>
-
-    <main class="max-w-5xl mx-auto px-4 py-6 md:py-8">
-        <!-- Progress Stepper -->
-        <div class="mb-8 no-print">
-            <div class="flex justify-between items-center max-w-2xl mx-auto relative">
-                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 -z-10"></div>
-                <div id="stepProgressLine" class="absolute left-0 top-1/2 -translate-y-1/2 w-0 h-1 bg-indigo-600 -z-10 transition-all duration-300"></div>
-
-                <div id="stepNode1" class="flex flex-col items-center">
-                    <div class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow ring-4 ring-white">1</div>
-                    <span class="text-xs font-semibold mt-1 text-indigo-900">Data Diri</span>
-                </div>
-                <div id="stepNode2" class="flex flex-col items-center">
-                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm ring-4 ring-white transition-all">2</div>
-                    <span class="text-xs font-medium mt-1 text-slate-500">Pengerjaan</span>
-                </div>
-                <div id="stepNode3" class="flex flex-col items-center">
-                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm ring-4 ring-white transition-all">3</div>
-                    <span class="text-xs font-medium mt-1 text-slate-500">Hasil Analisis</span>
-                </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Jenis Kelamin *</label>
+              <select id="gender" class="form-select" required>
+                <option value="" selected disabled>Pilih...</option>
+                <option value="Laki-laki">Laki-laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
             </div>
-        </div>
-
-        <!-- VIEW 1: FORM DATA DIRI -->
-        <section id="viewDataDiri" class="glass-card rounded-2xl p-6 md:p-8 shadow-xl max-w-2xl mx-auto">
-            <div class="border-b border-slate-100 pb-4 mb-6">
-                <h2 class="text-xl font-bold text-slate-900">Informasi Peserta</h2>
-                <p class="text-xs text-slate-500 mt-1">Silakan lengkapi identitas Anda sebelum memulai asesmen kepribadian DISC.</p>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Tujuan Tes *</label>
+              <input type="text" id="tujuan" class="form-control" placeholder="Contoh: Seleksi Kerja / Rekrutmen / Evaluasi Diri" required>
             </div>
+          </div>
 
-            <form id="formParticipant" onsubmit="startTest(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap *</label>
-                    <input type="text" id="inputNama" required placeholder="Contoh: Budi Santoso" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm text-slate-800">
-                </div>
+          <hr class="my-4">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Usia (Tahun) *</label>
-                        <input type="number" id="inputUsia" min="15" max="99" required placeholder="Contoh: 25" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm text-slate-800">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Jenis Kelamin *</label>
-                        <select id="inputGender" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm text-slate-800 bg-white">
-                            <option value="">-- Pilih --</option>
-                            <option value="Pria">Pria</option>
-                            <option value="Wanita">Wanita</option>
-                        </select>
-                    </div>
-                </div>
+          <!-- Petunjuk Pengisian -->
+          <div class="alert alert-info border-0 shadow-sm mb-4">
+            <h6 class="fw-bold mb-2"><i class="fa-solid fa-circle-info me-2"></i>Petunjuk Pengisian:</h6>
+            <ul class="mb-0 small ps-3">
+              <li>Pilih <b>1 kata yang Paling Menggambarkan Diri Anda (Most / P)</b>.</li>
+              <li>Pilih <b>1 kata yang Paling Tidak Menggambarkan Diri Anda (Least / M)</b> pada setiap nomor.</li>
+              <li>Pastikan kedua pilihan (P dan M) di baris yang sama tidak berada di kata yang sama.</li>
+            </ul>
+          </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Posisi / Jabatan (Opsional)</label>
-                    <input type="text" id="inputJabatan" placeholder="Contoh: Staff Marketing / General Manager" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm text-slate-800">
-                </div>
+          <!-- Tabel 24 Soal DISC MMI Form A -->
+          <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-list-check me-2"></i>Lembar Jawaban (24 Nomor)</h5>
+          
+          <div id="questionsContainer"></div>
 
-                <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-xs text-indigo-900 space-y-2 mt-4">
-                    <div class="font-bold flex items-center gap-1.5 text-indigo-950">
-                        <span>ℹ️</span> Petunjuk Pengerjaan:
-                    </div>
-                    <ul class="list-disc list-inside space-y-1 text-indigo-800 leading-relaxed">
-                        <li>Tes terdiri dari <b>24 nomor</b> grup pernyataan.</li>
-                        <li>Pilih <b>1 Most (+)</b>: Pernyataan yang <u>paling menggambarkan</u> diri Anda.</li>
-                        <li>Pilih <b>1 Least (-)</b>: Pernyataan yang <u>paling tidak menggambarkan</u> diri Anda.</li>
-                        <li>Tidak ada jawaban benar atau salah. Jawablah secara jujur dan spontan.</li>
-                    </ul>
-                </div>
-
-                <button type="submit" class="w-full py-3.5 px-6 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-bold rounded-xl shadow-lg shadow-indigo-200 text-sm transition-all duration-200 flex items-center justify-center space-x-2">
-                    <span>Mulai Tes DISC</span>
-                    <span>→</span>
-                </button>
-            </form>
-        </section>
-
-        <!-- VIEW 2: SOAL TES DISC -->
-        <section id="viewTest" class="hidden space-y-6">
-            <!-- Test Controls Header -->
-            <div class="glass-card rounded-2xl p-4 md:p-6 shadow-md flex flex-col md:flex-row items-center justify-between gap-4 sticky top-16 z-30">
-                <div>
-                    <span id="paginationInfo" class="text-xs font-bold uppercase tracking-wider text-indigo-600">Halaman 1 dari 4</span>
-                    <h3 class="text-lg font-bold text-slate-900">Jawab Pertanyaan DISC</h3>
-                </div>
-                <div class="w-full md:w-64 bg-slate-100 h-3 rounded-full overflow-hidden">
-                    <div id="testProgressBar" class="bg-indigo-600 h-full w-0 transition-all duration-300"></div>
-                </div>
-            </div>
-
-            <!-- Question Bank Container -->
-            <div id="questionsContainer" class="space-y-6"></div>
-
-            <!-- Pagination Buttons -->
-            <div class="flex items-center justify-between pt-4 no-print">
-                <button type="button" id="btnPrevPage" onclick="changePage(-1)" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition disabled:opacity-50 disabled:cursor-not-allowed">
-                    ← Halaman Sebelumnya
-                </button>
-                <button type="button" id="btnNextPage" onclick="changePage(1)" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow transition">
-                    Halaman Berikutnya →
-                </button>
-                <button type="button" id="btnSubmitTest" onclick="finishTest()" class="hidden px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-lg transition">
-                    ✓ Selesaikan & Lihat Hasil
-                </button>
-            </div>
-        </section>
-
-        <!-- VIEW 3: HASIL TES DISC -->
-        <section id="viewResult" class="hidden space-y-6">
-            <!-- Header Report -->
-            <div class="glass-card rounded-2xl p-6 md:p-8 shadow-xl border-t-4 border-t-indigo-600">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-6">
-                    <div>
-                        <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">Laporan Analisis Kepribadian</span>
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-2" id="resNamaUser">Nama Peserta</h2>
-                        <p class="text-xs text-slate-500 mt-0.5" id="resMetaUser">Pria, 25 Tahun • Posisi: Staff</p>
-                    </div>
-                    <div class="flex items-center gap-2 no-print">
-                        <button onclick="window.print()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5">
-                            🖨️ Cetak / Simpan PDF
-                        </button>
-                        <button onclick="resetTest()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 transition">
-                            🔄 Tes Ulang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Primary Personality Summary Box -->
-                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl">
-                        <span class="text-[11px] font-bold text-indigo-600 uppercase">Tipe Diri Utama</span>
-                        <div class="text-2xl font-black text-indigo-950 mt-1" id="resPrimaryType">Dominant</div>
-                        <p class="text-xs text-indigo-800 mt-1" id="resPrimaryDesc">Berorientasi hasil, tegas, dan berani mengambil keputusan.</p>
-                    </div>
-                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                        <span class="text-[11px] font-bold text-slate-500 uppercase">Profil Publik (Graph 1)</span>
-                        <div class="text-lg font-bold text-slate-800 mt-1" id="resGraph1Code">D-I</div>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Topeng / Persepsi Lingkungan</p>
-                    </div>
-                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                        <span class="text-[11px] font-bold text-slate-500 uppercase">Profil Inti (Graph 2)</span>
-                        <div class="text-lg font-bold text-slate-800 mt-1" id="resGraph2Code">S-C</div>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Karakter Asli Saat Tekanan</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Graphs Section -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Graph 1: Most (Public) -->
-                <div class="glass-card rounded-2xl p-5 shadow-md">
-                    <h4 class="text-sm font-bold text-slate-900 border-b pb-2 mb-3">Graph 1: Most (Public Self)</h4>
-                    <p class="text-[11px] text-slate-500 mb-4">Perilaku yang ditunjukkan ke publik / lingkungan kerja.</p>
-                    <div id="chartGraph1" class="h-48 flex items-end justify-between px-4 pb-2 border-b border-slate-200"></div>
-                </div>
-
-                <!-- Graph 2: Least (Private) -->
-                <div class="glass-card rounded-2xl p-5 shadow-md">
-                    <h4 class="text-sm font-bold text-slate-900 border-b pb-2 mb-3">Graph 2: Least (Core Self)</h4>
-                    <p class="text-[11px] text-slate-500 mb-4">Respon alami diri saat berada di bawah tekanan.</p>
-                    <div id="chartGraph2" class="h-48 flex items-end justify-between px-4 pb-2 border-b border-slate-200"></div>
-                </div>
-
-                <!-- Graph 3: Change (Integrated) -->
-                <div class="glass-card rounded-2xl p-5 shadow-md">
-                    <h4 class="text-sm font-bold text-slate-900 border-b pb-2 mb-3">Graph 3: Change (Integrated)</h4>
-                    <p class="text-[11px] text-slate-500 mb-4">Sintesis karakter aktual yang terpancar sehar-hari.</p>
-                    <div id="chartGraph3" class="h-48 flex items-end justify-between px-4 pb-2 border-b border-slate-200"></div>
-                </div>
-            </div>
-
-            <!-- Detailed Interpretations -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Dynamic Breakdown -->
-                <div class="glass-card rounded-2xl p-6 shadow-md space-y-4">
-                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span> Karakteristik Utamamu
-                    </h3>
-                    <div id="resDetailedTraits" class="space-y-3 text-xs leading-relaxed text-slate-600"></div>
-                </div>
-
-                <!-- Strengths & Recommendations -->
-                <div class="glass-card rounded-2xl p-6 shadow-md space-y-4">
-                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Gaya Kerja & Komunikasi
-                    </h3>
-                    <div id="resWorkStyle" class="space-y-3 text-xs leading-relaxed text-slate-600"></div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Toast Modal Notification -->
-    <div id="toastModal" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-        <div class="bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3 text-xs font-semibold">
-            <span id="toastIcon">⚠️</span>
-            <span id="toastMessage">Pesan Notifikasi</span>
-        </div>
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-submit btn-lg shadow-sm">
+              <i class="fa-solid fa-paper-plane me-2"></i>Kirim Jawaban
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Data bank 24 Soal MMI Form A DISC
-        const discQuestions = [
-            { id: 1, options: [
-                { text: "Gampang bergaul, ramah, mudah setuju", type: "I" },
-                { text: "Mempercayai, percaya pada orang lain", type: "S" },
-                { text: "Petualang, suka mengambil resiko", type: "D" },
-                { text: "Penuh toleransi, menghormati orang lain", type: "C" }
-            ]},
-            { id: 2, options: [
-                { text: "Yang penting adalah hasil", type: "D" },
-                { text: "Kerjakan dengan benar, ketepatan sangat penting", type: "C" },
-                { text: "Buat agar menyenangkan dan ceria", type: "I" },
-                { text: "Kerjakan bersama-sama dalam tim", type: "S" }
-            ]},
-            { id: 3, options: [
-                { text: "Berpendidikan, berpengetahuan luas", type: "C" },
-                { text: "Berani, pantang menyerah", type: "D" },
-                { text: "Penuh kasih sayang, perhatian", type: "S" },
-                { text: "Diplomatis, pandai membawa diri", type: "I" }
-            ]},
-            { id: 4, options: [
-                { text: "Berkemauan keras, berpendirian teguh", type: "D" },
-                { text: "Suka meyakinkan, komunikatif", type: "I" },
-                { text: "Easily guided, mudah menyesuaikan diri", type: "S" },
-                { text: "Teliti, teratur dan rinci", type: "C" }
-            ]},
-            { id: 5, options: [
-                { text: "Periang, penuh semangat", type: "I" },
-                { text: "Penurut, mengikuti aturan", type: "S" },
-                { text: "Berani mengejar target", type: "D" },
-                { text: "Tekun, fokus pada kualitas", type: "C" }
-            ]},
-            { id: 6, options: [
-                { text: "Suka berkompetisi, mau menang", type: "D" },
-                { text: "Penuh ide kreatif dan antusias", type: "I" },
-                { text: "Sabar dan mau mendengarkan", type: "S" },
-                { text: "Analitis dan logis", type: "C" }
-            ]},
-            { id: 7, options: [
-                { text: "Menyenangkan bagi orang lain", type: "I" },
-                { text: "Dapat diandalkan dan setia", type: "S" },
-                { text: "Pemberani dan independen", type: "D" },
-                { text: "Hati-hati dalam bertindak", type: "C" }
-            ]},
-            { id: 8, options: [
-                { text: "Agresif, suka tantangan", type: "D" },
-                { text: "Popular, disukai banyak orang", type: "I" },
-                { text: "Tenang, tidak mudah panik", type: "S" },
-                { text: "Rapi, sistematis dan prosedural", type: "C" }
-            ]},
-            { id: 9, options: [
-                { text: "Optimis dan selalu positif", type: "I" },
-                { text: "Ramah dan rendah hati", type: "S" },
-                { text: "Tegas dan langsung pada inti", type: "D" },
-                { text: "Cermat dan akurat", type: "C" }
-            ]},
-            { id: 10, options: [
-                { text: "Pengambil keputusan cepat", type: "D" },
-                { text: "Penyemangat kelompok", type: "I" },
-                { text: "Pendengar yang baik", type: "S" },
-                { text: "Pengamat yang kritis", type: "C" }
-            ]},
-            { id: 11, options: [
-                { text: "Ekspresif dan terbuka", type: "I" },
-                { text: "Penyabar dan mengalah", type: "S" },
-                { text: "Dominan dan memimpin", type: "D" },
-                { text: "Sesuai standar operasional", type: "C" }
-            ]},
-            { id: 12, options: [
-                { text: "Berani mengambil alih kontrol", type: "D" },
-                { text: "Suka bersosialisasi dan acara ramai", type: "I" },
-                { text: "Suka suasana damai tanpa konflik", type: "S" },
-                { text: "Menyukai kejelasan fakta & data", type: "C" }
-            ]},
-            { id: 13, options: [
-                { text: "Lincah, banyak bicara", type: "I" },
-                { text: "Cepat, penuh keyakinan", type: "D" },
-                { text: "Berusaha menjaga keseimbangan", type: "S" },
-                { text: "Berusaha patuh pada peraturan", type: "C" }
-            ]},
-            { id: 14, options: [
-                { text: "Ingin kemajuan / peningkatan", type: "D" },
-                { text: "Puas dengan keadaan, tenang", type: "S" },
-                { text: "Menunjukkan perasaan dengan terbuka", type: "I" },
-                { text: "Rendah hati, sederhana", type: "C" }
-            ]},
-            { id: 15, options: [
-                { text: "Memikirkan orang lain dahulu", type: "S" },
-                { text: "Suka bersaing / tantangan", type: "D" },
-                { text: "Optimis, berpikir positif", type: "I" },
-                { text: "Sistematis, berpikir logis", type: "C" }
-            ]},
-            { id: 16, options: [
-                { text: "Mengelola waktu dengan efisien", type: "C" },
-                { text: "Sering terburu-buru, merasa ditekan", type: "D" },
-                { text: "Hal-hal sosial adalah penting", type: "I" },
-                { text: "Suka menyelesaikan hal-hal yang sudah dimulai", type: "S" }
-            ]},
-            { id: 17, options: [
-                { text: "Tenang, pendiam & tertutup", type: "C" },
-                { text: "Gembira, bebas & riang", type: "I" },
-                { text: "Menyenangkan, baik hati", type: "S" },
-                { text: "Menyolok, berani", type: "D" }
-            ]},
-            { id: 18, options: [
-                { text: "Menyenangkan orang lain, ramah, penurut", type: "S" },
-                { text: "Tertawa lepas, hidup", type: "I" },
-                { text: "Pemberani, tegas", type: "D" },
-                { text: "Pendiam, tertutup, tenang", type: "C" }
-            ]},
-            { id: 19, options: [
-                { text: "Menolak perubahan mendadak", type: "S" },
-                { text: "Cenderung banyak berjanji", type: "I" },
-                { text: "Mundur bila dibawah tekanan", type: "C" },
-                { text: "Tidak takut berkelahi", type: "D" }
-            ]},
-            { id: 20, options: [
-                { text: "Menyediakan waktu untuk orang lain", type: "S" },
-                { text: "Merencanakan masa depan, siap", type: "C" },
-                { text: "Menuju petualangan baru", type: "D" },
-                { text: "Menerima penghargaan atas pencapaian target", type: "I" }
-            ]},
-            { id: 21, options: [
-                { text: "Ingin wewenang / kekuasaan lebih", type: "D" },
-                { text: "Ingin kesempatan baru", type: "I" },
-                { text: "Menghindari perselisihan / konflik", type: "S" },
-                { text: "Ingin arahan yang jelas", type: "C" }
-            ]},
-            { id: 22, options: [
-                { text: "Pendukung yang baik", type: "S" },
-                { text: "Pendengar yang baik", type: "I" },
-                { text: "Penganalisa yang baik", type: "C" },
-                { text: "Pandai membagi tugas", type: "D" }
-            ]},
-            { id: 23, options: [
-                { text: "Peraturan perlu diuji", type: "D" },
-                { text: "Peraturan membuat jadi adil", type: "C" },
-                { text: "Peraturan membuat membosankan", type: "I" },
-                { text: "Peraturan membuat aman", type: "S" }
-            ]},
-            { id: 24, options: [
-                { text: "Dapat dipercaya & diandalkan", type: "S" },
-                { text: "Kreatif, unik", type: "I" },
-                { text: "Berorientasi hasil / profit / untung", type: "D" },
-                { text: "Memegang teguh standard yang tinggi, akurat", type: "C" }
-            ]}
-        ];
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+    <h5 class="fw-bold text-dark">Sedang Mengirim Jawaban...</h5>
+    <p class="text-muted small">Mohon tunggu sebentar, data Anda sedang diproses oleh sistem.</p>
+  </div>
 
-        // State Global Aplikasi
-        let userData = {};
-        let userAnswers = {}; // { q1: { plus: 'D', minus: 'C' }, ... }
-        let currentPage = 1;
-        const totalPages = 4;
-        const questionsPerPage = 6;
+  <!-- Data Soal DISC MMI Form A (24 Soal x 4 Kata) -->
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxG2xfkJuC1TgnjL-OOg1Hn49knLNXDjzZY-r18U7mODrNdmKWjn-TWRrH5eWQj7jJFiA/exec";
 
-        function showToast(msg, icon = "⚠️") {
-            const toast = document.getElementById('toastModal');
-            document.getElementById('toastMessage').innerText = msg;
-            document.getElementById('toastIcon').innerText = icon;
+    const QUESTIONS = [
+      ["Gampang bergaul, ramah", "Meninggalkan kesan mendalam", "Penyabar, tidak mudah marah", "Cermat, teliti"],
+      ["Penuh tenaga, energik", "Penyempurna, idealis", "Suka humor, jenaka", "Mudah mengalah, penurut"],
+      ["Suka membantu, penolong", "Pemberani, tidak penakut", "Damai, mudah akur", "Cepat tertarik, bergairah"],
+      ["Mudah terbawa suasana", "Pengambil risiko, berani", "Bersahabat, mudah berteman", "Penyabar, tenang"],
+      ["Menyenangkan, humoris", "Dominan, suka memimpin", "Setia, bisa diandalkan", "Rendah hati, tidak sombong"],
+      ["Percaya diri, mantap", "Penuh semangat, ceria", "Pengertian, murah hati", "Tunduk, patuh"],
+      ["Suka mengekspresikan diri", "Teliti, cermat", "Suka kedamaian, tenang", "Kemauan kuat, gigih"],
+      ["Ramah, mudah berteman", "Penuh semangat, aktif", "Suka tantangan, berani", "Sistematis, teratur"],
+      ["Optimis, berpikiran positif", "Sabar, tidak tergesa-gesa", "Gampang bergaul, luwes", "Berhati-hati, waspada"],
+      ["Akurat, tepat", "Tenang, tidak gampang panik", "Menyenangkan, ramah", "Tegas, cepat mengambil keputusan"],
+      ["Murah hati, suka berbagi", "Runtut, teratur", "Penuh gairah, bersemangat", "Mandiri, tidak bergantung"],
+      ["Percaya diri, tegas", "Penyabar, tenang", "Ceria, periang", "Teliti, rapi"],
+      ["Manis, lembut", "Gigih, pantang menyerah", "Mudah sepakat, kooperatif", "Cermat, sistematis"],
+      ["Berani, tidak takut", "Suka membantu, penuh perhatian", "Suka bicara, komunikatif", "Berhati-hati, cermat"],
+      ["Setia, taat", "Kuat, teguh", "Suka humor, ceria", "Rendah hati, sopan"],
+      ["Akurat, cermat", "Percaya diri, berani", "Ramah, menyenangkan", "Tenang, damai"],
+      ["Teratur, rapi", "Suka bergaul, komunikatif", "Mudah menyesuaikan diri", "Tegas, dominan"],
+      ["Penyabar, tenang", "Penuh semangat, optimis", "Pengambil risiko, berani", "Cermat, teratur"],
+      ["Mudah sepakat, kooperatif", "Ceria, suka humor", "Teliti, rapi", "Pemberani, tegas"],
+      ["Pengertian, sabar", "Berhati-hati, cermat", "Suka bergaul, luwes", "Mandiri, dominan"],
+      ["Tegas, gigih", "Menyenangkan, ramah", "Mudah beradaptasi", "Cermat, teratur"],
+      ["Penuh gairah, bersemangat", "Suka kedamaian, sabar", "Runtut, akurat", "Pemberani, cepat mengambil keputusan"],
+      ["Dominan, suka memimpin", "Teliti, cermat", "Suka humor, ceria", "Pengertian, sabar"],
+      ["Penyabar, tenang", "Mudah bergaul, ramah", "Mandiri, tegas", "Berhati-hati, cermat"]
+    ];
 
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
+    // Render Soal ke HTML
+    const container = document.getElementById("questionsContainer");
+    QUESTIONS.forEach((q, idx) => {
+      const qNum = idx + 1;
+      let html = `
+        <div class="card mb-3 border-top border-primary border-3">
+          <div class="card-body p-3">
+            <h6 class="fw-bold text-primary mb-2">No. ${qNum}</h6>
+            <div class="table-responsive">
+              <table class="table table-bordered table-disc mb-0">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">P</th>
+                    <th style="width: 50px;">M</th>
+                    <th>Gambaran Diri (Pilihan Kata)</th>
+                  </tr>
+                </thead>
+                <tbody>`;
+      
+      q.forEach((option, optIdx) => {
+        html += `
+          <tr>
+            <td class="radio-cell">
+              <input type="radio" name="p_${qNum}" value="${optIdx}" required>
+            </td>
+            <td class="radio-cell">
+              <input type="radio" name="m_${qNum}" value="${optIdx}" required>
+            </td>
+            <td>${option}</td>
+          </tr>`;
+      });
 
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+      html += `
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>`;
+      container.innerHTML += html;
+    });
+
+    // Handling Submit Form (Peserta Hanya Melihat Pesan Sukses)
+    document.getElementById("discForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const answers = {};
+      let isValid = true;
+
+      for (let k = 1; k <= 24; k++) {
+        const pVal = document.querySelector(`input[name="p_${k}"]:checked`);
+        const mVal = document.querySelector(`input[name="m_${k}"]:checked`);
+
+        if (!pVal || !mVal) {
+          alert(`Nomor ${k} belum diisi lengkap (Pilih 1 Most dan 1 Least)!`);
+          isValid = false;
+          break;
         }
 
-        function startTest(e) {
-            e.preventDefault();
-            userData = {
-                nama: document.getElementById('inputNama').value.trim(),
-                usia: document.getElementById('inputUsia').value,
-                gender: document.getElementById('inputGender').value,
-                jabatan: document.getElementById('inputJabatan').value.trim() || 'Peserta'
-            };
-
-            // Switch view to Test
-            document.getElementById('viewDataDiri').classList.add('hidden');
-            document.getElementById('viewTest').classList.remove('hidden');
-
-            // Update Progress Line
-            document.getElementById('stepProgressLine').style.width = "50%";
-            document.getElementById('stepNode2').querySelector('div').className = "w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm ring-4 ring-white";
-            document.getElementById('stepNode2').querySelector('span').className = "text-xs font-bold mt-1 text-indigo-900";
-            document.getElementById('badgeStepText').innerText = "Langkah 2 dari 3";
-
-            renderQuestions();
-            updatePaginationUI();
+        if (pVal.value === mVal.value) {
+          alert(`Pada Nomor ${k}, kolom Most (P) dan Least (M) tidak boleh memilih baris kata yang sama!`);
+          isValid = false;
+          break;
         }
 
-        function renderQuestions() {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = "";
+        answers[`p_${k}`] = parseInt(pVal.value);
+        answers[`m_${k}`] = parseInt(mVal.value);
+      }
 
-            const startIdx = (currentPage - 1) * questionsPerPage;
-            const pageQuestions = discQuestions.slice(startIdx, startIdx + questionsPerPage);
+      if (!isValid) return;
 
-            pageQuestions.forEach(q => {
-                const ans = userAnswers[q.id] || {};
-                
-                const card = document.createElement('div');
-                card.className = "glass-card rounded-2xl p-5 shadow-sm border border-slate-200 transition hover:shadow-md";
-                
-                let optionsHTML = q.options.map((opt, idx) => {
-                    const isPlusChecked = ans.plus === opt.type ? 'checked' : '';
-                    const isMinusChecked = ans.minus === opt.type ? 'checked' : '';
+      const payload = {
+        nama: document.getElementById("nama").value.trim(),
+        usia: document.getElementById("usia").value.trim(),
+        gender: document.getElementById("gender").value,
+        tujuan: document.getElementById("tujuan").value.trim(),
+        answers: answers
+      };
 
-                    return `
-                        <div class="row-option flex items-center justify-between p-2.5 rounded-xl transition border border-transparent hover:border-slate-200">
-                            <span class="text-xs font-medium text-slate-700 leading-snug flex-1 pr-4">${opt.text}</span>
-                            <div class="flex items-center space-x-6">
-                                <label class="flex items-center cursor-pointer">
-                                    <input type="radio" name="plus_${q.id}" value="${opt.type}" ${isPlusChecked} onchange="selectOption(${q.id}, 'plus', '${opt.type}')" class="radio-custom radio-plus">
-                                </label>
-                                <label class="flex items-center cursor-pointer">
-                                    <input type="radio" name="minus_${q.id}" value="${opt.type}" ${isMinusChecked} onchange="selectOption(${q.id}, 'minus', '${opt.type}')" class="radio-custom radio-minus">
-                                </label>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+      document.getElementById("loadingOverlay").style.display = "flex";
 
-                card.innerHTML = `
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
-                        <span class="font-extrabold text-xs text-indigo-600 uppercase tracking-wider">Nomor ${q.id} dari 24</span>
-                        <div class="flex items-center space-x-6 text-[11px] font-extrabold tracking-wider">
-                            <span class="text-blue-600 uppercase">+ (Most)</span>
-                            <span class="text-red-600 uppercase">- (Least)</span>
-                        </div>
-                    </div>
-                    <div class="space-y-1">
-                        ${optionsHTML}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function selectOption(qId, mode, type) {
-            if (!userAnswers[qId]) {
-                userAnswers[qId] = {};
-            }
-
-            if (mode === 'plus') {
-                if (userAnswers[qId].minus === type) {
-                    showToast("Pernyataan Most (+) dan Least (-) pada nomor yang sama tidak boleh sama!", "🚫");
-                    // Uncheck radio
-                    document.querySelector(`input[name="plus_${qId}"][value="${type}"]`).checked = false;
-                    return;
-                }
-                userAnswers[qId].plus = type;
-            } else {
-                if (userAnswers[qId].plus === type) {
-                    showToast("Pernyataan Most (+) dan Least (-) pada nomor yang sama tidak boleh sama!", "🚫");
-                    document.querySelector(`input[name="minus_${qId}"][value="${type}"]`).checked = false;
-                    return;
-                }
-                userAnswers[qId].minus = type;
-            }
-
-            updateProgressBar();
-        }
-
-        function updateProgressBar() {
-            const answeredCount = Object.keys(userAnswers).filter(k => userAnswers[k].plus && userAnswers[k].minus).length;
-            const pct = Math.round((answeredCount / 24) * 100);
-            document.getElementById('testProgressBar').style.width = `${pct}%`;
-        }
-
-        function changePage(delta) {
-            // Validate current page completion before advancing
-            if (delta > 0) {
-                const startIdx = (currentPage - 1) * questionsPerPage;
-                const pageQuestions = discQuestions.slice(startIdx, startIdx + questionsPerPage);
-                
-                for (let q of pageQuestions) {
-                    const ans = userAnswers[q.id];
-                    if (!ans || !ans.plus || !ans.minus) {
-                        showToast(`Harap lengkapi nomor ${q.id} (Pilih + dan -) sebelum melanjutkan!`, "⚠️");
-                        return;
-                    }
-                }
-            }
-
-            currentPage += delta;
-            if (currentPage < 1) currentPage = 1;
-            if (currentPage > totalPages) currentPage = totalPages;
-
-            renderQuestions();
-            updatePaginationUI();
-            window.scrollTo({ top: 100, behavior: 'smooth' });
-        }
-
-        function updatePaginationUI() {
-            document.getElementById('paginationInfo').innerText = `Halaman ${currentPage} dari ${totalPages}`;
-            document.getElementById('btnPrevPage').disabled = (currentPage === 1);
-
-            if (currentPage === totalPages) {
-                document.getElementById('btnNextPage').classList.add('hidden');
-                document.getElementById('btnSubmitTest').classList.remove('hidden');
-            } else {
-                document.getElementById('btnNextPage').classList.remove('hidden');
-                document.getElementById('btnSubmitTest').classList.add('hidden');
-            }
-        }
-
-        function finishTest() {
-            // Check all 24 questions answered
-            for (let i = 1; i <= 24; i++) {
-                const ans = userAnswers[i];
-                if (!ans || !ans.plus || !ans.minus) {
-                    showToast(`Soal Nomor ${i} belum diisi lengkap!`, "⚠️");
-                    return;
-                }
-            }
-
-            calculateDISCResults();
-        }
-
-        function calculateDISCResults() {
-            let most = { D: 0, I: 0, S: 0, C: 0 };
-            let least = { D: 0, I: 0, S: 0, C: 0 };
-
-            Object.values(userAnswers).forEach(ans => {
-                if (ans.plus) most[ans.plus]++;
-                if (ans.minus) least[ans.minus]++;
-            });
-
-            let change = {
-                D: most.D - least.D,
-                I: most.I - least.I,
-                S: most.S - least.S,
-                C: most.C - least.C
-            };
-
-            // Switch to Results View
-            document.getElementById('viewTest').classList.add('hidden');
-            document.getElementById('viewResult').classList.remove('hidden');
-
-            // Update Progress Line to step 3
-            document.getElementById('stepProgressLine').style.width = "100%";
-            document.getElementById('stepNode3').querySelector('div').className = "w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm ring-4 ring-white";
-            document.getElementById('stepNode3').querySelector('span').className = "text-xs font-bold mt-1 text-emerald-900";
-            document.getElementById('badgeStepText').innerText = "Selesai";
-
-            renderReportData(most, least, change);
-        }
-
-        function renderReportData(most, least, change) {
-            document.getElementById('resNamaUser').innerText = userData.nama;
-            document.getElementById('resMetaUser').innerText = `${userData.gender}, ${userData.usia} Tahun • Posisi: ${userData.jabatan}`;
-
-            // Helper render Bar Chart
-            const renderBarGraph = (containerId, dataObj, isChange = false) => {
-                const container = document.getElementById(containerId);
-                container.innerHTML = "";
-                const keys = ['D', 'I', 'S', 'C'];
-                
-                // Color mapping
-                const colors = { D: 'bg-red-500', I: 'bg-amber-500', S: 'bg-emerald-500', C: 'bg-blue-500' };
-
-                keys.forEach(k => {
-                    let val = dataObj[k];
-                    let heightPct = 0;
-                    if (isChange) {
-                        // range approx -24 to +24
-                        heightPct = Math.min(100, Math.max(10, ((val + 24) / 48) * 100));
-                    } else {
-                        // range 0 to 24
-                        heightPct = Math.min(100, Math.max(10, (val / 24) * 100));
-                    }
-
-                    const col = document.createElement('div');
-                    col.className = "flex flex-col items-center flex-1 space-y-2";
-                    col.innerHTML = `
-                        <span class="text-[11px] font-extrabold text-slate-700">${val > 0 && isChange ? '+'+val : val}</span>
-                        <div class="w-8 md:w-10 bg-slate-100 rounded-t-lg overflow-hidden flex items-end h-36">
-                            <div class="${colors[k]} w-full transition-all duration-700 rounded-t-lg" style="height: ${heightPct}%"></div>
-                        </div>
-                        <span class="text-xs font-black text-slate-800">${k}</span>
-                    `;
-                    container.appendChild(col);
-                });
-            };
-
-            renderBarGraph('chartGraph1', most);
-            renderBarGraph('chartGraph2', least);
-            renderBarGraph('chartGraph3', change, true);
-
-            // Determine dominant type based on Graph 3 (Integrated Change Score)
-            const sortedTypes = Object.keys(change).sort((a, b) => change[b] - change[a]);
-            const primary = sortedTypes[0];
-            const secondary = sortedTypes[1];
-
-            document.getElementById('resGraph1Code').innerText = Object.keys(most).sort((a,b)=>most[b]-most[a]).slice(0,2).join('-');
-            document.getElementById('resGraph2Code').innerText = Object.keys(least).sort((a,b)=>least[b]-least[a]).slice(0,2).join('-');
-
-            const profileDetails = {
-                D: {
-                    title: "Dominance (Penekan / Pengendali)",
-                    desc: "Seseorang yang berorientasi pada hasil, cepat mengambil keputusan, tegas, menyukai tantangan, dan berani bersaing.",
-                    workStyle: "Menyukai lingkungan kerja yang dinamis, berfokus pada efisiensi, dan memegang otoritas keputusan.",
-                    communication: "Bicara langsung pada inti masalah (direct), singkat, dan berorientasi pada solusi nyata."
-                },
-                I: {
-                    title: "Influence (Influensial / Pengantar)",
-                    desc: "Seseorang yang komunikatif, antusias, ramah, meyakinkan, serta pandai membangun suasana positif.",
-                    workStyle: "Sangat baik dalam tim sosialisasi, promosi, dan negosiasi berorientasi pada persuasi manusia.",
-                    communication: "Ekspresif, hangat, ramah, dan menyukai apresiasi atas ide-ide kreatifnya."
-                },
-                S: {
-                    title: "Steadiness (Stabil / Pendukung)",
-                    desc: "Seseorang yang sabar, tenang, dapat diandalkan, setia, dan menyukai keharmonisan tanpa konflik tinggi.",
-                    workStyle: "Bekerja secara konsisten, loyal pada prosedur, dan menjadi penyeimbang suasana tim.",
-                    communication: "Mendengarkan dengan baik, penuh empati, dan menghindari nada konfrontatif."
-                },
-                C: {
-                    title: "Conscientiousness (Cermat / Analitis)",
-                    desc: "Seseorang yang teliti, analitis, taat aturan, akurat, dan berorientasi pada fakta serta kualitas tinggi.",
-                    workStyle: "Sangat menonjol dalam riset, sistematisasi, riset data, serta penjagaan mutu standar.",
-                    communication: "Sistematis, terstruktur, berbasis data/fakta, dan objektif."
-                }
-            };
-
-            const mainProfile = profileDetails[primary];
-            const secProfile = profileDetails[secondary];
-
-            document.getElementById('resPrimaryType').innerText = `${primary} - ${mainProfile.title.split(' ')[0]}`;
-            document.getElementById('resPrimaryDesc').innerText = mainProfile.desc;
-
-            // Detailed Traits Box
-            document.getElementById('resDetailedTraits').innerHTML = `
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <b class="text-slate-900 block mb-1">Tipe Dominan (${primary}):</b>
-                    <p class="text-slate-600">${mainProfile.desc}</p>
-                </div>
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <b class="text-slate-900 block mb-1">Tipe Sekunder (${secondary}):</b>
-                    <p class="text-slate-600">${secProfile.desc}</p>
-                </div>
-            `;
-
-            // Work Style & Communication Box
-            document.getElementById('resWorkStyle').innerHTML = `
-                <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
-                    <b class="text-emerald-950 block mb-1">🎯 Gaya Kerja Ideal:</b>
-                    <p class="text-emerald-900">${mainProfile.workStyle}</p>
-                </div>
-                <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100">
-                    <b class="text-indigo-950 block mb-1">💬 Gaya Komunikasi:</b>
-                    <p class="text-indigo-900">${mainProfile.communication}</p>
-                </div>
-            `;
-        }
-
-        function resetTest() {
-            if (confirm("Apakah Anda yakin ingin mengulang tes DISC ini? Seluruh data jawaban akan direset.")) {
-                userAnswers = {};
-                currentPage = 1;
-                document.getElementById('formParticipant').reset();
-                document.getElementById('viewResult').classList.add('hidden');
-                document.getElementById('viewDataDiri').classList.remove('hidden');
-
-                // Reset progress bar stepper
-                document.getElementById('stepProgressLine').style.width = "0%";
-                document.getElementById('stepNode2').querySelector('div').className = "w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm ring-4 ring-white";
-                document.getElementById('stepNode3').querySelector('div').className = "w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm ring-4 ring-white";
-                document.getElementById('badgeStepText').innerText = "Langkah 1 dari 3";
-            }
-        }
-    </script>
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+        
+        // Tampilan sukses sederhana untuk peserta
+        document.body.innerHTML = `
+          <div class="container py-5 text-center">
+            <div class="card p-5 shadow-sm mx-auto" style="max-width: 600px;">
+              <div class="mb-3 text-success">
+                <i class="fa-solid fa-circle-check fa-4x"></i>
+              </div>
+              <h3 class="fw-bold mb-2">Tes Berhasil Terkirim!</h3>
+              <p class="text-muted">Terima kasih telah menyelesaikan Tes DISC Online MMI Form A.<br>Jawaban Anda telah tersimpan dan laporan hasil tes telah dikirimkan ke tim psikolog kami.</p>
+            </div>
+          </div>
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      })
+      .catch(error => {
+        document.getElementById("loadingOverlay").style.display = "none";
+        alert("Terjadi kesalahan saat mengirimkan data: " + error.message);
+      });
+    });
+  </script>
 </body>
 </html>
