@@ -91,8 +91,10 @@
     <p class="text-muted small">Mohon tunggu sebentar, data Anda sedang diproses oleh sistem.</p>
   </div>
 
-  <!-- Data Soal DISC MMI Form A (24 Soal x 4 Kata) -->
   <script>
+    // PASTI-KAN URL INI SAMA DENGAN WEB APP URL DARI GOOGLE APPS SCRIPT LATEST DEPLOYMENT
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxG2xfkJuC1TgnjL-OOg1Hn49knLNXDjzZY-r18U7mODrNdmKWjn-TWRrH5eWQj7jJFiA/exec";
+
     const QUESTIONS = [
       ["Gampang bergaul, ramah", "Meninggalkan kesan mendalam", "Penyabar, tidak mudah marah", "Cermat, teliti"],
       ["Penuh tenaga, energik", "Penyempurna, idealis", "Suka humor, jenaka", "Mudah mengalah, penurut"],
@@ -161,7 +163,7 @@
       container.innerHTML += html;
     });
 
-    // Submit Handler menggunakan google.script.run (Native Apps Script Call)
+    // Handling Submit Form via Fetch (CORS Safe)
     document.getElementById("discForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
@@ -200,11 +202,18 @@
 
       document.getElementById("loadingOverlay").style.display = "flex";
 
-      // Menggunakan API Asli Google Apps Script (Bukan Fetch URL)
-      google.script.run
-        .withSuccessHandler(function(response) {
-          document.getElementById("loadingOverlay").style.display = "none";
-          
+      // Mengirim data ke Google Apps Script menggunakan Content-Type text/plain agar bebas dari CORS issue
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("loadingOverlay").style.display = "none";
+        if (data.status === "success") {
           document.body.innerHTML = `
             <div class="container py-5 text-center">
               <div class="card p-5 shadow-sm mx-auto" style="max-width: 600px;">
@@ -212,17 +221,19 @@
                   <i class="fa-solid fa-circle-check fa-4x"></i>
                 </div>
                 <h3 class="fw-bold mb-2">Tes Berhasil Terkirim!</h3>
-                <p class="text-muted">Terima kasih telah menyelesaikan Tes DISC Online MMI Form A.<br>Jawaban Anda telah tersimpan dan laporan hasil tes telah dikirimkan ke tim psikolog kami.</p>
+                <p class="text-muted">Terima kasih telah menyelesaikan Tes DISC Online MMI Form A.<br>Jawaban Anda telah tersimpan dan laporan hasil tes telah diproses.</p>
               </div>
             </div>
           `;
           window.scrollTo({ top: 0, behavior: 'smooth' });
-        })
-        .withFailureHandler(function(error) {
-          document.getElementById("loadingOverlay").style.display = "none";
-          alert("Terjadi kesalahan saat mengirimkan data: " + error.message);
-        })
-        .processFormData(payload);
+        } else {
+          alert("Gagal memproses jawaban di server: " + data.message);
+        }
+      })
+      .catch(error => {
+        document.getElementById("loadingOverlay").style.display = "none";
+        alert("Terjadi kesalahan koneksi ke server Apps Script: " + error.message);
+      });
     });
   </script>
 </body>
